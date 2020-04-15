@@ -2,17 +2,11 @@
 
 #include <iostream>
 #include <SDL.h>
+#include "Common.h"
+#include "Ball.h"
+#include "Paddle.h"
 
 using namespace std;
-
-struct Vector2
-{
-	float x;
-	float y;
-};
-
-const int thickness = 15;
-const int paddleH = 100;
 
 class Game
 {
@@ -43,15 +37,12 @@ private:
 	// Renderer
 	SDL_Renderer* mRenderer;
 
-	// Position of paddle
-	Vector2 mPaddlePos;
-	// Position of ball
-	Vector2 mBallPos;
-	// Velocity of ball
-	Vector2 mBallVel;
-	SDL_Rect wall;
-	SDL_Rect ball;
+	// Paddle object
+	Paddle paddle;
+	
+	// Ball object
+	Ball ball;
+
 	Uint32 mTicksCount;
-	int mPaddleDir;
 };
 
