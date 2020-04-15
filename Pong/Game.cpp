@@ -156,10 +156,10 @@ void Game::renderGame()
 	SDL_RenderFillRect(mRenderer, &wall);
 
 	// Draw paddle
-	paddle.render(mRenderer);
-
+	paddleRenderer.render(paddle, mRenderer);
+	
 	// Draw ball
-	ball.render(mRenderer);
+	ballRenderer.render(ball, mRenderer);
 
 	// Swap front buffer and back buffer
 	SDL_RenderPresent(mRenderer);

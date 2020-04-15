@@ -10,8 +10,6 @@ public:
 
 	void update(float deltaTime, const Paddle& paddle);
 
-	void render(SDL_Renderer* renderer);
-
 	void setPosition(float xPos, float yPos);
 
 	void setVelocity(float xVel, float yVel);

@@ -44,17 +44,6 @@ void Ball::update(float deltaTime, const Paddle& paddle)
 	}
 }
 
-void Ball::render(SDL_Renderer* renderer)
-{
-	SDL_Rect ball{
-		static_cast<int>(mBallPos.x - thickness / 2),
-		static_cast<int>(mBallPos.y - thickness / 2),
-		thickness,
-		thickness
-	};
-	SDL_RenderFillRect(renderer, &ball);
-}
-
 void Ball::setPosition(float xPos, float yPos)
 {
 	mBallPos.x = xPos;

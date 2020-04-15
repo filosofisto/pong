@@ -5,6 +5,8 @@
 #include "Common.h"
 #include "Ball.h"
 #include "Paddle.h"
+#include "BallRenderer.h"
+#include "PaddleRenderer.h"
 
 using namespace std;
 
@@ -39,9 +41,15 @@ private:
 
 	// Paddle object
 	Paddle paddle;
+
+	// Paddle renderer
+	PaddleRenderer paddleRenderer;
 	
 	// Ball object
 	Ball ball;
+
+	// Ball renderer
+	BallRenderer ballRenderer;
 
 	Uint32 mTicksCount;
 };
