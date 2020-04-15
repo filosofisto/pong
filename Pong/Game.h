@@ -5,6 +5,15 @@
 
 using namespace std;
 
+struct Vector2
+{
+	float x;
+	float y;
+};
+
+const int thickness = 15;
+const int paddleH = 100;
+
 class Game
 {
 public:
@@ -30,5 +39,19 @@ private:
 
 	// Game should continue to run
 	bool mIsRunning;
+
+	// Renderer
+	SDL_Renderer* mRenderer;
+
+	// Position of paddle
+	Vector2 mPaddlePos;
+	// Position of ball
+	Vector2 mBallPos;
+	// Velocity of ball
+	Vector2 mBallVel;
+	SDL_Rect wall;
+	SDL_Rect ball;
+	Uint32 mTicksCount;
+	int mPaddleDir;
 };
 
