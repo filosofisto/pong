@@ -137,10 +137,10 @@ void Game::renderGame()
 	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
 
 	// Draw top wall
-	renderRect(0, 0, static_cast<int>(width), thickness);
+	renderRect(0, 0, iwidth, thickness);
 
 	// Draw bottom wall
-	renderRect(0, 768 - thickness, static_cast<int>(width), thickness);
+	renderRect(0, 768 - thickness, iwidth, thickness);
 
 	// Draw right wall
 	renderRect(1024 - thickness, 0, thickness, 1024);

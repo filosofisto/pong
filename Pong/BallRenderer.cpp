@@ -30,7 +30,7 @@ void BallRenderer::draw_circle(const Ball& ball, SDL_Renderer* renderer) const
 			{
 				SDL_RenderDrawPoint(
 					renderer, 
-					static_cast<int>(ball.getPosition().x + dx), 
+					static_cast<int>(ball.getPosition().x) + dx, 
 					static_cast<int>(ball.getPosition().y) + dy);
 			}
 		}
