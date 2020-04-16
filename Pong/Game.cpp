@@ -6,8 +6,8 @@ Game::Game():
 	mTicksCount(0),
 	mIsRunning(true)
 {
-	ball.setPosition(1024.0f / 2.0f, 768.0f / 2.0f);
-	ball.setVelocity(-200.0f, 235.0f);
+	ball.setPosition(width / 2.0f, height / 2.0f);
+	ball.setVelocity(xBallInitVelocity, yBallInitVelocity);
 }
 
 bool Game::initialize()
@@ -23,10 +23,10 @@ bool Game::initialize()
 	// Create a Window
 	mWindow = SDL_CreateWindow(
 		"Pong Game",
-		100,
-		100,
-		1024,
-		768,
+		xWindow,
+		yWindow,
+		wWindow,
+		hWindow,
 		0
 	);
 	if (!mWindow) {
@@ -92,7 +92,7 @@ void Game::processInput()
 void Game::updateGame()
 {
 	// Wait until 16ms has elapsed since last frame
-	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16));
+	waitFor(16);
 
 	// Delta time is the difference in ticks from last frame (converted in seconds)
 	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
@@ -163,4 +163,10 @@ void Game::renderGame()
 
 	// Swap front buffer and back buffer
 	SDL_RenderPresent(mRenderer);
+}
+
+void Game::waitFor(int mills) const
+{
+	// Wait until 16ms has elapsed since last frame
+	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + mills));
 }

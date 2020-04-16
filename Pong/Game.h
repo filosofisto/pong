@@ -29,6 +29,7 @@ private:
 	void processInput();
 	void updateGame();
 	void renderGame();
+	void waitFor(int mills) const;
 
 	// Window create by SDL
 	SDL_Window* mWindow;
