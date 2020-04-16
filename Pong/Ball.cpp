@@ -56,7 +56,17 @@ void Ball::setVelocity(float xVel, float yVel)
 	mBallVel.y = yVel;
 }
 
+void Ball::setRadius(int radius)
+{
+	this->radius = radius;
+}
+
 Vector2 Ball::getPosition() const
 {
 	return mBallPos;
+}
+
+int Ball::getRadius() const
+{
+	return radius;
 }

@@ -30,6 +30,7 @@ private:
 	void updateGame();
 	void renderGame();
 	void waitFor(int mills) const;
+	void renderRect(int x, int y, int w, int h) const;
 
 	// Window create by SDL
 	SDL_Window* mWindow;

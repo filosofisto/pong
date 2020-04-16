@@ -8,6 +8,7 @@ Game::Game():
 {
 	ball.setPosition(width / 2.0f, height / 2.0f);
 	ball.setVelocity(xBallInitVelocity, yBallInitVelocity);
+	ball.setRadius(7);
 }
 
 bool Game::initialize()
@@ -136,24 +137,13 @@ void Game::renderGame()
 	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
 
 	// Draw top wall
-	SDL_Rect wall{
-		0,			// Top left x
-		0,			// Top left y
-		1024,		// Width
-		thickness	// Height
-	};
-	SDL_RenderFillRect(mRenderer, &wall);
+	renderRect(0, 0, static_cast<int>(width), thickness);
 
 	// Draw bottom wall
-	wall.y = 768 - thickness;
-	SDL_RenderFillRect(mRenderer, &wall);
+	renderRect(0, 768 - thickness, static_cast<int>(width), thickness);
 
 	// Draw right wall
-	wall.x = 1024 - thickness;
-	wall.y = 0;
-	wall.w = thickness;
-	wall.h = 1024;
-	SDL_RenderFillRect(mRenderer, &wall);
+	renderRect(1024 - thickness, 0, thickness, 1024);
 
 	// Draw paddle
 	paddleRenderer.render(paddle, mRenderer);
@@ -169,4 +159,15 @@ void Game::waitFor(int mills) const
 {
 	// Wait until 16ms has elapsed since last frame
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + mills));
+}
+
+void Game::renderRect(int x, int y, int w, int h) const
+{
+	SDL_Rect rect {
+		x,	// Top left x
+		y,	// Top left y
+		w,	// Width
+		h	// Height
+	};
+	SDL_RenderFillRect(mRenderer, &rect);
 }
