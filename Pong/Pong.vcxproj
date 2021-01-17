@@ -141,20 +141,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallRenderer.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PaddleRenderer.cpp" />
+    <ClCompile Include="Vector2.cpp" />
+    <ClCompile Include="Wall.cpp" />
+    <ClCompile Include="WallRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallRenderer.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="PaddleRenderer.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Wall.h" />
+    <ClInclude Include="WallRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

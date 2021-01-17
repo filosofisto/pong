@@ -2,22 +2,24 @@
 
 #include <SDL.h>
 #include "Common.h"
+#include "Vector2.h"
+#include "Actor.h"
+#include "Game.h"
+#include "PaddleRenderer.h"
+#include <iostream>
 
-class Paddle
+class Paddle: public Actor
 {
 public:
-	Paddle();
+	Paddle(class Game* game, class PaddleRenderer* paddleRenderer);
 
-	Vector2 getPosition() const;
+	void processInputActor(const Uint8* state);
 
-	void processInput(const Uint8* state);
+	void updateActor(float deltaTime);
 
-	void update(float deltaTime);
-
-	void render(SDL_Renderer* renderer);
+	void renderActor();
 private:
-	Vector2 mPaddlePos;
-
 	int mPaddleDir;
+	class PaddleRenderer* mRenderer;
 };
 

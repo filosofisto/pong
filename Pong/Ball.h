@@ -2,29 +2,30 @@
 
 #include "Common.h"
 #include "Paddle.h"
+#include "Actor.h"
+#include "Game.h"
+#include "BallRenderer.h"
 
-class Ball
+class Ball: public Actor
 {
 public:
-	Ball();
+	Ball(class Game* game, class BallRenderer* renderer);
 
-	void update(float deltaTime, const Paddle& paddle);
+	void updateActor(float deltaTime);
 
-	void setPosition(float xPos, float yPos);
+	void renderActor();
 
 	void setVelocity(float xVel, float yVel);
 
 	void setRadius(int radius);
 
-	Vector2 getPosition() const;
-
 	int getRadius() const;
 private:
-	// Position of ball
-	Vector2 mBallPos;
 	// Velocity of ball
 	Vector2 mBallVel;
 	// Radius of ball
-	int radius;
+	int mRadius;
+
+	class BallRenderer* mRenderer;
 };
 

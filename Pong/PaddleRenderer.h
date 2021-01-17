@@ -1,12 +1,15 @@
 #pragma once
-
+#include <iostream>
+#include "Game.h"
 #include "Paddle.h"
 
 class PaddleRenderer
 {
 public:
-	PaddleRenderer();
+	PaddleRenderer(class Game* game);
 
-	void render(const Paddle& paddle, SDL_Renderer* renderer) const;
+	void render(class Paddle* paddle) const;
+private:
+	class Game* mGame;
 };
 

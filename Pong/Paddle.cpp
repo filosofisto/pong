@@ -1,17 +1,19 @@
 #include "Paddle.h"
 
-Paddle::Paddle(): mPaddleDir(0)
+Paddle::Paddle(class Game* game, class PaddleRenderer* renderer)
+	:Actor(game)
+	,mRenderer(renderer)
+	,mPaddleDir(0)
 {
-	mPaddlePos.x = 10.0f;
-	mPaddlePos.y = 768.0f / 2.0f;
+	game->setPaddle(this);
+
+	Vector2 position = getPosition();
+	position.x = 10.0f;
+	position.y = 768.0f / 2.0f;
 }
 
-Vector2 Paddle::getPosition() const
-{
-	return mPaddlePos;
-}
 
-void Paddle::processInput(const Uint8* state)
+void Paddle::processInputActor(const Uint8* state)
 {
 	// Update paddle direction based on W/S keys
 	mPaddleDir = 0;
@@ -23,30 +25,32 @@ void Paddle::processInput(const Uint8* state)
 	}
 }
 
-void Paddle::update(float deltaTime)
+void Paddle::updateActor(float deltaTime)
 {
+	// Current vector position
+	Vector2 position = getPosition();
+
 	// Update paddle position based on direction
 	if (mPaddleDir != 0) {
-		mPaddlePos.y += mPaddleDir * 300.0f * deltaTime; // 300 pixel/sec
+		float y = position.y + mPaddleDir * 300.0f * deltaTime; // 300 pixel/sec
 
 		// Make sure paddle doesn't move off screen
-		if (mPaddlePos.y < (paddleH / 2.0f + thickness)) {
-			mPaddlePos.y = paddleH / 2.0f + thickness;
+		if (y < (paddleH / 2.0f + thickness)) {
+			y = paddleH / 2.0f + thickness;
 		}
-		else if (mPaddlePos.y > (768.0f - paddleH / 2.0f - thickness)) {
-			mPaddlePos.y = 768.0f - paddleH / 2.0f - thickness;
+		else if (y > (768.0f - paddleH / 2.0f - thickness)) {
+			y = 768.0f - paddleH / 2.0f - thickness;
 		}
+
+		setPosition(Vector2(position.x, y));
 	}
+
+	//std::cout << "y = " << position.y << std::endl;
 }
 
-void Paddle::render(SDL_Renderer* renderer)
+void Paddle::renderActor()
 {
-	SDL_Rect paddle{
-		static_cast<int>(mPaddlePos.x),
-		static_cast<int>(mPaddlePos.y - paddleH / 2),
-		thickness,
-		static_cast<int>(paddleH)
-	};
-	SDL_RenderFillRect(renderer, &paddle);
+	mRenderer->render(this);
 }
+
 

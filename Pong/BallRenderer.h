@@ -1,16 +1,17 @@
 #pragma once
-
+#include <iostream>
 #include <SDL.h>
 #include "Ball.h"
 
 class BallRenderer
 {
 public:
-	BallRenderer();
+	BallRenderer(class Game* game);
 
-	void render(const Ball& ball, SDL_Renderer* renderer) const;
-
+	void render(class Ball* ball) const;
 private:
-	void draw_circle(const Ball& ball, SDL_Renderer* renderer) const;
+	void draw_circle(class Ball* ball) const;
+
+	class Game* mGame;
 };
 

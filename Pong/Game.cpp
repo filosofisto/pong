@@ -1,14 +1,19 @@
 #include "Game.h"
 
-Game::Game(): 
+Game::Game(const string& titleWindow):
+	mTitleWindow(titleWindow),
 	mWindow(nullptr),
 	mRenderer(nullptr),
 	mTicksCount(0),
-	mIsRunning(true)
+	mIsRunning(true),
+	mPendingActors(false),
+	mUpdatingActors(false)
 {
-	ball.setPosition(width / 2.0f, height / 2.0f);
-	ball.setVelocity(xBallInitVelocity, yBallInitVelocity);
-	ball.setRadius(7);
+}
+
+Game::~Game()
+{
+
 }
 
 bool Game::initialize()
@@ -23,7 +28,7 @@ bool Game::initialize()
 
 	// Create a Window
 	mWindow = SDL_CreateWindow(
-		"Pong Game",
+		mTitleWindow.c_str(),
 		xWindow,
 		yWindow,
 		wWindow,
@@ -46,7 +51,7 @@ bool Game::initialize()
 		SDL_Log("Failed to create renderer: %s", SDL_GetError());
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -54,8 +59,36 @@ void Game::runLoop()
 {
 	while (mIsRunning) {
 		processInput();
-		updateGame();
-		renderGame();
+		update();
+		render();
+	}
+}
+
+void Game::processInput()
+{
+	SDL_Event event;
+
+	//While there are still events in the queue
+	while (SDL_PollEvent(&event)) {
+		switch (event.type) {
+		case SDL_QUIT:
+			mIsRunning = false;
+			break;
+		}
+
+		// Get state of keyboard
+		const Uint8* state = SDL_GetKeyboardState(NULL);
+		// If escape is pressed, also end loop
+		if (state[SDL_SCANCODE_ESCAPE]) {
+			mIsRunning = false;
+			break;
+		}
+
+		// Update direction of paddle if W/S keys pressed
+		//paddle.processInput(state);
+		for (vector<class Actor*>::const_iterator it = mActors.begin(); it != mActors.end(); ++it) {
+			(*it)->processInputActor(state);
+		}
 	}
 }
 
@@ -66,32 +99,54 @@ void Game::shutdown()
 	SDL_Quit();
 }
 
-void Game::processInput()
+void Game::addActor(Actor* actor)
 {
-	SDL_Event event;
-
-	//While there are still events in the queue
-	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
-			case SDL_QUIT:
-				mIsRunning = false;
-				break;
-		}
-
-		// Get state of keyboard
-		const Uint8* state = SDL_GetKeyboardState(NULL);
-		// If escape is pressed, also end loop
-		if (state[SDL_SCANCODE_ESCAPE]) {
-			mIsRunning = false;
-		} 
-
-		// Update direction of paddle if W/S keys pressed
-		paddle.processInput(state);
+	if (mUpdatingActors) {
+		mPendingActors.emplace_back(actor);
+	}
+	else {
+		mActors.emplace_back(actor);
 	}
 }
 
-void Game::updateGame()
+
+void Game::removeActor(Actor* actor)
 {
+	// Is it in pending actors?
+	auto it = find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (it != mPendingActors.end()) {
+		// Swap to end of vector and pop off (avoid erase copies)
+		iter_swap(it, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
+	}
+
+	// Is it in actors
+	it = find(mActors.begin(), mActors.end(), actor);
+	if (it != mActors.end()) {
+		// Swap to end of vector and pop off (avoid erase copies)
+		iter_swap(it, mActors.end() - 1);
+		mActors.pop_back();
+	}
+}
+
+SDL_Renderer* Game::getRenderer() const
+{
+	return mRenderer;
+}
+
+Actor* Game::getPaddle()
+{
+	return mPaddle;
+}
+
+void Game::setPaddle(class Actor* paddle)
+{
+	mPaddle = paddle;
+}
+
+void Game::update()
+{
+	// Compute delta time
 	// Wait until 16ms has elapsed since last frame
 	waitFor(16);
 
@@ -106,20 +161,34 @@ void Game::updateGame()
 	// Update tick counts (for next frame)
 	mTicksCount = SDL_GetTicks();
 
-	// Update paddle position based on direction
-	paddle.update(deltaTime);
+	// Update all actors
+	mUpdatingActors = true;
+	for (auto actor : mActors) {
+		actor->update(deltaTime);
+	}
+	mUpdatingActors = false;
 
-	// Update ball position
-	ball.update(deltaTime, paddle);
+	// Move any pending actors to mActors
+	for (auto actor : mPendingActors) {
+		mActors.emplace_back(actor);
+	}
+	mPendingActors.clear();
 
-	// Did the ball go off the screen? (if so, end game)
-	if (ball.getPosition().x <= 0.0f)
-	{
-		mIsRunning = false;
+	// Add any dead actors to a temp vector
+	vector<Actor*> deadActors;
+	for (auto actor : mActors) {
+		if (actor->getState() == Actor::EDead) {
+			deadActors.emplace_back(actor);
+		}
+	}
+
+	// Delete dead actors (which remove them from mActors
+	for (auto actor : deadActors) {
+		delete actor;
 	}
 }
 
-void Game::renderGame()
+void Game::render()
 {
 	// Set draw color to blue
 	SDL_SetRenderDrawColor(
@@ -136,38 +205,21 @@ void Game::renderGame()
 	// Draw walls
 	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
 
-	// Draw top wall
-	renderRect(0, 0, iwidth, thickness);
-
-	// Draw bottom wall
-	renderRect(0, 768 - thickness, iwidth, thickness);
-
-	// Draw right wall
-	renderRect(1024 - thickness, 0, thickness, 1024);
-
-	// Draw paddle
-	paddleRenderer.render(paddle, mRenderer);
+	renderActors();
 	
-	// Draw ball
-	ballRenderer.render(ball, mRenderer);
-
 	// Swap front buffer and back buffer
 	SDL_RenderPresent(mRenderer);
+}
+
+void Game::renderActors()
+{
+	for (vector<class Actor*>::const_iterator it = mActors.begin(); it != mActors.end(); ++it) {
+		(*it)->render();
+	}
 }
 
 void Game::waitFor(int mills) const
 {
 	// Wait until 16ms has elapsed since last frame
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + mills));
-}
-
-void Game::renderRect(int x, int y, int w, int h) const
-{
-	SDL_Rect rect {
-		x,	// Top left x
-		y,	// Top left y
-		w,	// Width
-		h	// Height
-	};
-	SDL_RenderFillRect(mRenderer, &rect);
 }
