@@ -144,6 +144,11 @@ void Game::setPaddle(class Actor* paddle)
 	mPaddle = paddle;
 }
 
+void Game::setRunning(bool value)
+{
+	mIsRunning = value;
+}
+
 void Game::update()
 {
 	// Compute delta time

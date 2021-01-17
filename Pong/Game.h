@@ -35,6 +35,8 @@ public:
 
 	Actor* getPaddle();
 	void setPaddle(class Actor* paddle);
+
+	void setRunning(bool value);
 protected:
 	virtual void processInput();
 	virtual void update();
